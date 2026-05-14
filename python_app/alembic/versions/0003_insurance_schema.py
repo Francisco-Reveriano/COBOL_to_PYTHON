@@ -11,9 +11,13 @@ Adds the tables for the GenApp insurance domain, ported from
 * ``insurance_policy_commercial``      — from ``DB2-COMMERCIAL``
 * ``insurance_claim``                  — from ``DB2-CLAIM``
 
-Revision ID: 0002_insurance_schema
-Revises: 0001
+Revision ID: 0003_insurance_schema
+Revises: 0002_abnd_file
 Create Date: 2026-05-14
+
+Note: this migration was originally authored as ``0002_insurance_schema``
+off ``0001`` in parallel with the FR-07 abnd_file migration; the chain
+was rebased onto ``0002_abnd_file`` when that PR landed first.
 """
 
 from __future__ import annotations
@@ -21,8 +25,8 @@ from __future__ import annotations
 import sqlalchemy as sa
 from alembic import op
 
-revision: str = "0002_insurance_schema"
-down_revision: str | None = "0001"
+revision: str = "0003_insurance_schema"
+down_revision: str | None = "0002_abnd_file"
 branch_labels: str | None = None
 depends_on: str | None = None
 
