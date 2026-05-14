@@ -76,7 +76,12 @@ def create_customer(
         # service contract (and existing callers) stays unchanged.
         credit_score = asyncio.run(credit_score_check_async(simulate_delay=False))
     if cs_review_date is None:
-        cs_review_date = today()
+        # FR-04 / CRECUST WS-REVIEW-DATE-ADD: stamp the credit-score
+        # review date 21 days in the future (CRECUST.cbl:775-780 sets
+        # the review date within the next 21 days).  The requirements
+        # doc fixes this to a constant 21-day window for determinism;
+        # the COBOL randomises within 1..21.
+        cs_review_date = today() + _dt.timedelta(days=21)
 
     customer = Customer(
         eyecatcher="CUST",
