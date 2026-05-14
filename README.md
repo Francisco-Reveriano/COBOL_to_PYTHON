@@ -16,6 +16,7 @@ here are a few examples:
 - [Downloading](#downloading)
 - [Installing](#installing)
 - [Usage](#usage)
+- [Conversion](#conversion)
 - [Contributors](#contributors)
 
 ## About
@@ -89,6 +90,14 @@ Various user guides are provided:
   4. For the Payment interface please refer to the [CBSA Payment Interface User Guide.](https://github.com/cicsdev/cics-banking-sample-application-cbsa/tree/main/etc/usage/springBoot/doc/CBSA_Payment_Interface_User_Guide.md)
   5. For the RESTful API guide please refer to the [CBSA RESTful Api Guide.](https://github.com/cicsdev/cics-banking-sample-application-cbsa/tree/main/etc/usage/springBoot/doc/CBSA_Restful_API_guide.md)
 
+
+## Conversion
+
+A COBOL → Python migration is in planning for both CBSA and the bundled
+GenApp (`cics-genapp/`). The full requirements document — including program
+inventories, functional / non-functional requirements, the target data model,
+and outstanding questions for the user / designer — lives at
+[`docs/COBOL_to_Python_Requirements.md`](./docs/COBOL_to_Python_Requirements.md).
 
 ## Contributors
  > Jon Collett - JonCollettIBM
