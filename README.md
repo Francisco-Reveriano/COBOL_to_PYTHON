@@ -97,7 +97,7 @@ A COBOL → Python migration is in planning for both CBSA and the bundled
 GenApp (`cics-genapp/`). The full requirements document — including program
 inventories, functional / non-functional requirements, the target data model,
 and outstanding questions for the user / designer — lives at
-[`docs/COBOL_to_Python_Requirements.md`](./docs/COBOL_to_Python_Requirements.md).
+[`doc/COBOL_to_Python_Requirements.md`](./doc/COBOL_to_Python_Requirements.md).
 
 ## Contributors
  > Jon Collett - JonCollettIBM
