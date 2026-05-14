@@ -16,3 +16,17 @@ src/*.irx
 **/target
 src/webui/WebContent/static
 src/bank-application-frontend/.whitesource
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+cbsa.db
+.coverage
