@@ -72,6 +72,23 @@ uvicorn app.main:app --reload
 
 OpenAPI docs are at `http://localhost:8000/docs`.
 
+## Running with Docker
+
+A `Dockerfile` and `docker-compose.yml` are provided to run the FastAPI service
+together with a PostgreSQL 16 database. The compose file applies Alembic
+migrations on startup; the optional `seed` service populates the initial test
+data and is gated behind the `seed` profile so it does not run by default.
+
+```bash
+cd python_app
+docker compose up -d
+curl http://localhost:8000/health
+docker compose --profile seed up seed
+```
+
+The image is multi-stage (Python 3.12 slim base) and runs as a non-root `cbsa`
+user. A container `HEALTHCHECK` polls `/health` via `curl`.
+
 ## Running tests
 
 ```bash
