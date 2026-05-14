@@ -66,3 +66,31 @@ def test_delete_customer_cascades_accounts(session):
         session.query(Account).filter_by(customer_number=c.number).count()
     )
     assert remaining == 0
+
+def test_create_customer_default_cs_review_date_is_today_plus_21_days(session):
+    """FR-04: CRECUST stamps CUSTOMER-CS-REVIEW-DATE 21 days in the future."""
+    today = _dt.date.today()
+    c = customer_service.create_customer(
+        session,
+        name="Test Review",
+        address="1 Test St",
+        date_of_birth=_dt.date(1990, 1, 1),
+        credit_score=700,  # bypass agency fan-out
+    )
+    assert c.cs_review_date == today + _dt.timedelta(days=21), (
+        f"expected today+21d ({today + _dt.timedelta(days=21)}), got {c.cs_review_date}"
+    )
+
+
+def test_create_customer_explicit_cs_review_date_is_preserved(session):
+    """Caller-supplied cs_review_date overrides the +21 default."""
+    explicit = _dt.date(2030, 1, 15)
+    c = customer_service.create_customer(
+        session,
+        name="Test Explicit Review",
+        address="2 Test St",
+        date_of_birth=_dt.date(1990, 1, 1),
+        credit_score=700,
+        cs_review_date=explicit,
+    )
+    assert c.cs_review_date == explicit
