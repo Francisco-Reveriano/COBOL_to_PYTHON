@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: cbsa
+      POSTGRES_USER: cbsa
+      POSTGRES_PASSWORD: cbsa
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cbsa"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      CBSA_DATABASE_URL: postgresql+psycopg2://cbsa:cbsa@db:5432/cbsa
+    ports:
+      - "8000:8000"
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+  seed:
+    build: .
+    depends_on:
+      app:
+        condition: service_started
+    environment:
+      CBSA_DATABASE_URL: postgresql+psycopg2://cbsa:cbsa@db:5432/cbsa
+    command: python -m app.db.seed
+    profiles: ["seed"]
+
+volumes:
+  pgdata:
