@@ -436,7 +436,11 @@ def _update_sub_type(
 ) -> None:
     """In-place field update of the sub-type row matching ``policy``."""
     if details.policy_type == POLICY_TYPE_ENDOWMENT:
-        assert isinstance(details, EndowmentDetails) and policy.endowment is not None
+        assert isinstance(details, EndowmentDetails)  # type narrowing only
+        if policy.endowment is None:
+            raise IntegrityError(
+                f"Policy {policy.policy_number} marked Endowment but has no sub-type row"
+            )
         e = policy.endowment
         e.with_profits = details.with_profits
         e.equities = details.equities
@@ -446,7 +450,11 @@ def _update_sub_type(
         e.sum_assured = details.sum_assured
         e.life_assured = details.life_assured
     elif details.policy_type == POLICY_TYPE_HOUSE:
-        assert isinstance(details, HouseDetails) and policy.house is not None
+        assert isinstance(details, HouseDetails)  # type narrowing only
+        if policy.house is None:
+            raise IntegrityError(
+                f"Policy {policy.policy_number} marked House but has no sub-type row"
+            )
         h = policy.house
         h.property_type = details.property_type
         h.bedrooms = details.bedrooms
@@ -455,7 +463,11 @@ def _update_sub_type(
         h.house_number = details.house_number
         h.postcode = details.postcode
     elif details.policy_type == POLICY_TYPE_MOTOR:
-        assert isinstance(details, MotorDetails) and policy.motor is not None
+        assert isinstance(details, MotorDetails)  # type narrowing only
+        if policy.motor is None:
+            raise IntegrityError(
+                f"Policy {policy.policy_number} marked Motor but has no sub-type row"
+            )
         m = policy.motor
         m.make = details.make
         m.model = details.model
@@ -467,7 +479,11 @@ def _update_sub_type(
         m.premium = details.premium
         m.accidents = details.accidents
     elif details.policy_type == POLICY_TYPE_COMMERCIAL:
-        assert isinstance(details, CommercialDetails) and policy.commercial is not None
+        assert isinstance(details, CommercialDetails)  # type narrowing only
+        if policy.commercial is None:
+            raise IntegrityError(
+                f"Policy {policy.policy_number} marked Commercial but has no sub-type row"
+            )
         c = policy.commercial
         c.address = details.address
         c.postcode = details.postcode

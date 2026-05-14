@@ -217,6 +217,38 @@ def test_update_policy_cross_type_rejected(session: Session) -> None:
         )
 
 
+def test_update_policy_missing_sub_type_row_raises_integrity_error(
+    session: Session,
+) -> None:
+    """Defensive: if the header marks a type but the sub-type row is missing
+    (only reachable via direct DB tampering or cascade ordering bugs), the
+    update path must raise ``IntegrityError`` — which the FastAPI router maps
+    to a 409 response — rather than ``AssertionError`` (uncaught → 500, and
+    silently stripped under ``python -O``)."""
+    cust = _make_customer(session)
+    p = _make_endowment(session, cust.customer_number)
+    # Simulate the corruption: drop the sub-type row out from under the header.
+    session.delete(p.endowment)
+    session.flush()
+    session.refresh(p)
+    assert p.endowment is None  # precondition for the regression test
+
+    with pytest.raises(IntegrityError):
+        services.update_policy(
+            session,
+            p.policy_number,
+            details=EndowmentDetails(
+                with_profits=True,
+                equities=False,
+                managed_fund=True,
+                fund_name="GROWTH",
+                term=10,
+                sum_assured=50_000,
+                life_assured="x",
+            ),
+        )
+
+
 def test_update_missing_policy_raises(session: Session) -> None:
     with pytest.raises(NotFoundError):
         services.update_policy(session, 9999, payment=1)
