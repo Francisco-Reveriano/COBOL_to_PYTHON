@@ -11,6 +11,7 @@ from fastapi import HTTPException, status
 from app.services.errors import (
     AccountTypeRestrictionError,
     CBSAError,
+    CreditAgencyTimeoutError,
     InsufficientFundsError,
     IntegrityError,
     InvalidAccountTypeError,
@@ -29,6 +30,7 @@ _STATUS_BY_ERROR: dict[type[CBSAError], int] = {
     SameAccountTransferError: status.HTTP_422_UNPROCESSABLE_ENTITY,
     TooManyAccountsError: status.HTTP_409_CONFLICT,
     InvalidAccountTypeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+    CreditAgencyTimeoutError: status.HTTP_504_GATEWAY_TIMEOUT,
 }
 
 

@@ -65,3 +65,14 @@ class InvalidAccountTypeError(CBSAError):
     """Account type is not one of ISA/MORTGAGE/SAVING/CURRENT/LOAN (fail ``A``)."""
 
     fail_code = "A"
+
+
+class CreditAgencyTimeoutError(CBSAError):
+    """All credit agencies failed to respond within the 3-second window.
+
+    Mirrors ``CRECUST.cbl``'s ``COMM-FAIL-CODE = 'C'`` branch, which is
+    taken when the parent's ``EXEC CICS FETCH ANY`` returns NOTFINISHED
+    *and* no replies have been retrieved yet.
+    """
+
+    fail_code = "T"
