@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import datetime as _dt
 import decimal as _d
 
@@ -29,7 +30,7 @@ from app.services.common import (
     today,
 )
 from app.services.errors import NotFoundError
-from app.services.support_service import credit_score_check
+from app.services.support_service import credit_score_check_async
 
 
 def _ensure_control(session: Session, name: str) -> Control:
@@ -69,10 +70,11 @@ def create_customer(
     count.value_num = count.value_num + 1
 
     if credit_score is None:
-        # CRECUST aggregates scores from 5 credit agencies; we use a single
-        # synchronous stub call.  Pass simulate_delay=False so service
-        # callers and tests are not blocked by the COBOL 0-3s sleep.
-        credit_score = credit_score_check(simulate_delay=False)
+        # CRECUST fans out to 5 credit agencies (CRDTAGY1..5) and averages
+        # whichever replied within the 3-second WAIT EVENT.  Drive the
+        # async fan-out from this sync entrypoint via asyncio.run so the
+        # service contract (and existing callers) stays unchanged.
+        credit_score = asyncio.run(credit_score_check_async(simulate_delay=False))
     if cs_review_date is None:
         cs_review_date = today()
 
@@ -176,9 +178,7 @@ def delete_customer(session: Session, number: int | str) -> Customer:
                 time=n.time().replace(microsecond=0),
                 ref="",
                 type=PROC_TYPE_BRANCH_DELETE_ACCOUNT,
-                description=(
-                    f"{customer.number}{acc.type:<8}DELETE"
-                )[:40],
+                description=(f"{customer.number}{acc.type:<8}DELETE")[:40],
                 amount=acc.actual_balance,
             )
         )
